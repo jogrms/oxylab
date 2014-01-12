@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="my-gdx-game-desktop" default="dist">
+ 
+    <!-- Import libgdx build rules. -->
+    <import file="libgdx_rules.xml" />
+ 
+</project>
