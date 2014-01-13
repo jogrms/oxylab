@@ -22,10 +22,6 @@ public class Factor implements ValueModel {
         return kind;
     }
 
-    public void setKind(Kind kind) {
-        this.kind = kind;
-    }
-
     public double getValue() {
         return value;
     }
@@ -34,15 +30,12 @@ public class Factor implements ValueModel {
         this.value = value;
     }
 
-    public double getDelta() {
-        return delta;
-    }
-
-    public void setDelta(double delta) {
-        this.delta = delta;
+    public void addDelta(double delta) {
+        this.delta += delta;
     }
 
     public void update() {
         value += delta;
+        delta = 0;
     }
 }

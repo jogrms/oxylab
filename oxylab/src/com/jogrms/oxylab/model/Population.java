@@ -30,6 +30,7 @@ public class Population implements ValueModel {
         if (size > maxSize) {
         	size = maxSize;
         }
+        delta = 0;
     }
 
     public Lab getLab() {
@@ -44,11 +45,7 @@ public class Population implements ValueModel {
         return size;
     }
 
-    public double getDelta() {
-        return delta;
-    }
-
-    public void setDelta(double delta) {
+    public void addDelta(double delta) {
         this.delta = delta;
     }
 

@@ -26,7 +26,7 @@ public class Species {
             double rate = (p.getLab().getFactor(fr.getKind()).getValue() - fr.getIdealValue()) / fr.getRadius();
             squaresSum += rate * rate;
         }
-        p.setDelta((1 - squaresSum) * p.getSize() * productionRate * dt);
+        p.addDelta((1 - squaresSum) * p.getSize() * productionRate * dt);
     }
 
     public String getName() {
@@ -41,7 +41,7 @@ public class Species {
         return maxDensity;
     }
 
-    public double getBirthRate() {
+    public double getProductionRate() {
         return productionRate;
     }
 
