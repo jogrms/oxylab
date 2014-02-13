@@ -1,6 +1,5 @@
 (defproject oxylab "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.5.1"]
-                 [com.keminglabs/c2 "0.2.3"]
                  [enfocus "2.0.0-SNAPSHOT"]]
 
   :main ^:skip-aot oxylab.core
