@@ -5,10 +5,11 @@
             [enfocus.effects :as effects])
   (:require-macros [enfocus.macros :as em]))
 
+(def bg-color "#272b30")
 
 (def field
-  (for [x (range -5 5)
-        y (range -5 5)]
+  (for [x (range -3 3)
+        y (range -3 4)]
     [x y]))
 
 (defn cell-id [x y]
@@ -30,7 +31,7 @@
                 x2d (- y2d 5.658)
                 (+ x2d 4.9) (- y2d 2.829)]]
     [:polygon {:id (cell-id x y)
-               :stroke "#777" :stroke-width 0.2 :fill "#444"
+               :stroke "#444" :stroke-width 0.2 :fill bg-color
                :points (apply str (interpose \  points))}]))
 
 (defn render-cells []
@@ -48,12 +49,17 @@
           id (cell-ids x y)]
       (ef/at [id] (events/listen :click #(cell-click id))))))
 
-(defn template [] (.-innerHTML
+(defn generate-layout-html []
+  (ef/html
+    [:div.container
+     [:div {:style "width: 525px; margin: 0 auto;"}
+      [:div#field {:style "height: 525px;"}]]]))
+
+(defn generate-field-html [] (.-outerHTML
   (ef/html 
-    [:div
-     [:svg {:width "525" :height "500" :viewbox "-5 0 105 100"}
-      [:rect {:width 100 :height 100 :fill "#444"}]
-      (render-cells)]])))
+      [:svg {:width "525" :height "500" :viewbox "-5 0 105 100"}
+       [:rect {:width 100 :height 100 :fill bg-color}]
+       (render-cells)])))
 
 (defn initial-render [model]
   (doseq [cell (:cells model)]
@@ -62,8 +68,8 @@
 
 (defn start []
   (ef/at js/document
-    ["body"] (ef/content (template))
-    ["body"] (ef/set-attr :style "background-color: #444; align: center;"))
+    ["body"] (ef/content (generate-layout-html))
+    ["#field"] (ef/content (generate-field-html)))
   (generate-handlers)
   (initial-render (model/init)))
 
