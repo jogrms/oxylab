@@ -23,10 +23,12 @@
 ; Functions
 ;
 
-(defn init-cell []
+(defn init-cell [x y]
   {:acid 1.0
-   :detrit 0.0
-   :soil 0.0})
+   :detrit 0.002
+   :soil 0.001
+   :x x
+   :y y})
 
 ;
 ; Interface
@@ -35,7 +37,7 @@
 (defn ^:export init []
   {:cells (apply hash-map
                  (apply concat
-                        (map #(vector %1 (init-cell)) test-data)))})
+                        (map #(vector %1 (apply init-cell %1)) test-data)))})
 
 (defn ^:export get-cell
   [world x y] (get (:cells world) [x y]))

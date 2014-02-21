@@ -2,7 +2,8 @@
   (:require [oxylab.model :as model]
             [enfocus.core :as ef]
             [enfocus.events :as events]
-            [enfocus.effects :as effects])
+            [enfocus.effects :as effects]
+            [cljs.reader :as reader])
   (:require-macros [enfocus.macros :as em]))
 
 (def bg-color "#272b30")
@@ -12,11 +13,18 @@
         y (range -3 4)]
     [x y]))
 
+(defn show [x]
+  (js/alert (str x)))
+
 (defn cell-id [x y]
   (str "cell" x "x" y))
 
 (defn cell-ids [x y]
   (str "#" (cell-id x y)))
+
+(defn id->cell [id]
+  (apply vector (map reader/read-string
+    (next (clojure.string/split id #"[celx]+")))))
 
 (defn hex->2d [[x y]]
   [(+ 50 (+ (* (mod y 2) 5) (* x 10)))
@@ -66,12 +74,16 @@
     (let [[x y] (first cell)]
       (ef/at [(cell-ids x y)] (cell-lab-transform)))))
 
+(def world (atom (model/init)))
+
 (defn start []
   (ef/at js/document
     ["body"] (ef/content (generate-layout-html))
     ["#field"] (ef/content (generate-field-html)))
   (generate-handlers)
-  (initial-render (model/init)))
+  (initial-render @world)
+  (show (get (:cells @world) [0 0])))
+
 
 (defn ^:export main []
   (set! (.-onload js/window) start))
