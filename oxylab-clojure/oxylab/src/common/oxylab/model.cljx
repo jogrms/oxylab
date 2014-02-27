@@ -34,6 +34,15 @@
 ; Interface
 ;
 
+(def field
+  (for [x (range -4 4)
+        y (range -4 5)]
+    [x y]))
+
+(defn ^:export evolve-cell [world k]
+  (assoc-in world [:cells k] (apply init-cell k)))
+
+
 (defn ^:export init []
   {:cells (apply hash-map
                  (apply concat
