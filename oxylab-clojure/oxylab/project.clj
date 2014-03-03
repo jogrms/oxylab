@@ -15,11 +15,11 @@
   :cljx {
          :builds [
                   {
-                   :source-paths ["src/common"]
+                   :source-paths ["src/cljx"]
                    :output-path "target/generated/clj"
                    :rules :clj}
                   {
-                   :source-paths ["src/common"]
+                   :source-paths ["src/cljx"]
                    :output-path "target/generated/cljs"
                    :rules :cljs}
                   ]}
