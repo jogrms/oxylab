@@ -6,37 +6,59 @@
             [enfocus.effects :as effects])
   (:require-macros [enfocus.macros :as em]))
 
-(def world (atom (m/init-world)))
-
 (declare cell-click)
 
+(defn init-state []
+  {:world (m/init-world)})
+
+(def state (atom (init-state)))
+
+(def fps 10)
+
+(defn- update-state [state]
+  (update-in state [:world] m/update-world))
+
 (defn evolve-click [id]
-  (swap! world m/evolve-cell (v/id->cell id))
+  (swap! state update-in [:world] #(m/evolve-cell % (v/id->key id)))
   (ef/at [id] (v/cell-lab-transform))
   (cell-click id))
 
 (defn cell-click [id]
-  (ef/at ["#info"] (ef/content (v/generate-info-html
-                                 (get-in @world [:cells (v/id->cell id)]))))
+  (swap! state assoc-in [:selected-cell] id)
+  (ef/at ["#cell-info"] (ef/content (v/generate-cell-info-html @state id)))
   (ef/at ["#evolve-btn"] (events/listen :click #(evolve-click id))))
 
 (defn generate-handlers []
   (doseq [cell m/field]
     (let [[x y] cell
-          id (v/cell-ids x y)]
+          id (v/key->ids [x y])]
       (ef/at [id] (events/listen :click #(cell-click id))))))
 
-(defn initial-render [world]
-  (doseq [cell (:cells world)]
+(defn initial-render [state]
+  (doseq [cell (get-in state [:world :cells])]
     (let [[x y] (first cell)]
-      (ef/at [(v/cell-ids x y)] (v/cell-lab-transform)))))
+      (ef/at [(v/key->ids [x y])] (v/cell-lab-transform)))))
 
-(defn start []
+(defn- render-lab-info [state]
+  (ef/at ["#lab-info"] (ef/content (v/generate-lab-info-html state))))
+
+(defn- render [state]
+  (render-lab-info state)
+  (v/render-app-info state))
+
+(defn- next-frame []
+  "Main loop. Update game state, render it and re-schedule next-frame call"
+  (swap! state update-state)
+  (render @state)
+  ((.-setTimeout js/window) next-frame (/ 1000 fps)))
+
+(defn- start []
   (ef/at js/document
     ["body"] (ef/content (v/generate-layout-html))
     ["#field"] (ef/content (v/generate-field-html)))
   (generate-handlers)
-  (initial-render @world))
+  (initial-render @state)
+  (next-frame))
 
 (defn ^:export main []
   (set! (.-onload js/window) start))
