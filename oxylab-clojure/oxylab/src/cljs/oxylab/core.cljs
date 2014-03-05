@@ -6,9 +6,10 @@
             [enfocus.effects :as effects])
   (:require-macros [enfocus.macros :as em]))
 
-(def world (atom (m/init)))
+(def world (atom (m/init-world)))
 
 (declare cell-click)
+
 (defn evolve-click [id]
   (swap! world m/evolve-cell (v/id->cell id))
   (ef/at [id] (v/cell-lab-transform))
