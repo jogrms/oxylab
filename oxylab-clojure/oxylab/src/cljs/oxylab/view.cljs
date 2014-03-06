@@ -92,7 +92,10 @@
       [:div.col-xs-3#cell-info {:style "padding-top: 40px;"}]
       [:div.col-xs-3#lab-info {:style "padding-top: 40px;"}]]
      [:div.row
-      [:div#app-info]]]))
+      [:div.col-xs-3#app-info]
+      [:div.col-xs-3
+       [:p
+        [:span#fps] " FPS"]]]]))
 
 (defn generate-lab-info-html [state]
   (ef/html
@@ -109,6 +112,12 @@
      (-> state
          (dissoc :world)
          (->paragraphs))]))
+
+(defn byid [id]
+  (.getElementById js/document id))
+
+(defn html! [node s]
+  (set! (.-innerHTML node) s))
 
 (defn generate-field-html [] (.-outerHTML
   (ef/html 
