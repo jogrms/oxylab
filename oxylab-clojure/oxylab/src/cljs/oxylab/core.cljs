@@ -19,12 +19,16 @@
   (update-in state [:world] m/update-world))
 
 (defn evolve-click [id]
-  (swap! state update-in [:world] #(m/evolve-cell % (v/id->key id)))
-  (ef/at [id] (v/cell-lab-transform))
-  (cell-click id))
+  (let [k (v/id->key id)]
+    (swap! state update-in [:world] m/evolve-cell k)
+    (when (get-in @state [:world :cells k])
+      (v/evolve-cell @state id))
+    (cell-click id)))
 
 (defn cell-click [id]
-  (swap! state assoc-in [:selected-cell] id)
+  (v/unselect-cell @state (v/key->id (:selected-cell @state)))
+  (v/select-cell @state id)
+  (swap! state assoc-in [:selected-cell] (v/id->key id))
   (ef/at ["#cell-info"] (ef/content (v/generate-cell-info-html @state id)))
   (ef/at ["#evolve-btn"] (events/listen :click #(evolve-click id))))
 
@@ -32,24 +36,18 @@
   (doseq [cell m/field]
     (let [[x y] cell
           id (v/key->ids [x y])]
-      (ef/at [id] (events/listen :click #(cell-click id))))))
+      (ef/at [id] (events/listen :mousedown #(cell-click id))))))
 
 (defn initial-render [state]
   (doseq [cell (get-in state [:world :cells])]
     (let [[x y] (first cell)]
-      (ef/at [(v/key->ids [x y])] (v/cell-lab-transform)))))
-
-(defn- render-lab-info [state]
-  (ef/at ["#lab-info"] (ef/content (v/generate-lab-info-html state))))
-
-(defn- render [state]
-  (render-lab-info state)
-  (v/render-app-info state))
+      (v/evolve-cell state (v/key->id [x y])))))
 
 (defn- next-frame []
   "Main loop. Update game state, render it and re-schedule next-frame call"
-  (swap! state update-state)
-  (render @state)
+  (let [old-state @state]
+    (swap! state update-state)
+    (v/render old-state @state))
   ((.-setTimeout js/window) next-frame (/ 1000 fps)))
 
 (defn- start []

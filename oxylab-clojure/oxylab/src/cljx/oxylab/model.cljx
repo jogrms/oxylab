@@ -48,9 +48,24 @@
                (apply hash-map))
    :tick 0})
 
-(defn evolve-cell [world k]
+(defn can-evolve? [world [x y]]
+  (let [t (+ x (mod y 2))
+        near #{[(dec x) y]
+               [(inc x) y]
+               [(dec t) (dec y)]
+               [t (dec y)]
+               [(dec t) (inc y)]
+               [t (inc y)]}]
+    (->> (:cells world)
+         (keys)
+         (filter near)
+         (seq))))
+
+(defn evolve-cell [world [x y :as k]]
   "Add new cell with key k to the lab"
-  (assoc-in world [:cells k] (init-cell k)))
+  (if (can-evolve? world k)
+    (assoc-in world [:cells k] (init-cell k))
+    world))
 
 (defn update-world [world]
   "Main game state update funciton"
