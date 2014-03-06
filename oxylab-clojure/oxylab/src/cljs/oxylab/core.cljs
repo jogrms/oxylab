@@ -16,7 +16,9 @@
 (def fps 10)
 
 (defn- update-state [state]
-  (update-in state [:world] m/update-world))
+  (-> state
+      (update-in [:world] m/update-world)
+      (update-in [:tick] inc)))
 
 (defn evolve-click [id]
   (let [k (v/id->key id)]

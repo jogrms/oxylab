@@ -24,13 +24,17 @@
 ;
 
 (defn- init-cell [[x y]]
-  "Returns default setting for the cell at given coordinates k"
+  "Returns default settings for the cell at given coordinates k"
   {:resources {:acid 1.0
                :detrit 0.002
                :soil 0.001}
-   :populations {}
-   :x x
-   :y y})
+   :populations {}})
+
+(defn- init-species []
+  "Returns defaut settings for a species"
+  {:size 1.0
+   :max-size 100.0
+   :production (fn [resources size] (* size 1.1))})
 
 ;
 ; Interface
@@ -46,7 +50,16 @@
                (map #(vector % (init-cell %)))
                (apply concat)
                (apply hash-map))
-   :tick 0})
+   :species {:scryopus (init-species)}})
+
+(defn can-populate? [world k species]
+  (not (get-in world [:cells k :populations species])))
+
+(defn populate-cell [world k species]
+  (if (can-populate? world k species)
+    (assoc-in world [:cells k :populations species]
+              (get-in world [:species species]))
+    world))            
 
 (defn can-evolve? [world [x y]]
   (let [t (+ x (mod y 2))
@@ -69,7 +82,7 @@
 
 (defn update-world [world]
   "Main game state update funciton"
-  (update-in world [:tick] inc))
+  world)
 
 (defn get-cell [world k]
   "Get cell at given coordinates k"

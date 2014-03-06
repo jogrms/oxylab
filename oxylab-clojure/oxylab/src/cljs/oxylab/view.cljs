@@ -23,8 +23,21 @@
   [(+ 50 (+ (* (mod y 2) 5) (* x 10)))
    (+ 50 (* y 8.66))])
 
-(defn ->paragraphs [s]
-  (map #(vector :p (str %)) s))
+(defn clear-borders [m]
+  {:style (str "margin: 0px 0px 0px " m "px; border: 0px; padding: 0px;")})
+
+(defn ->paragraphs [coll]
+  (let [p (fn [c] [:p (clear-borders 0) (->paragraphs c)])
+        i (fn [[k v]]
+            (list [:p (clear-borders 0)
+                   (str k)]
+                  [:div (clear-borders 10)
+                   (->paragraphs v)]))]
+    (cond
+      (vector? coll) (map p (seq coll))
+      (map? coll) (map i (seq coll))
+      (fn? coll) "fn"
+      :else (str coll))))
 
 (defn render-cell [[x y :as coords]]
   (let [[x2d y2d] (key->coord coords)
@@ -69,13 +82,7 @@
               [:p])]
            [:div
             [:h2 "cell info:"]
-            [:p (str "coordinates: " (:x cell) ", " (:y cell))]
-            [:h3 "resources:"]
-            (->> (:resources cell)
-                 (->paragraphs))
-            [:h3 "populations:"]
-            (->> (:populations cell)
-                 (->paragraphs))]))))
+            (->paragraphs cell)]))))
 
 (defn generate-layout-html []
   (ef/html
@@ -83,7 +90,7 @@
      [:div.row
       [:div.col-xs-6#field]
       [:div.col-xs-3#cell-info {:style "padding-top: 40px;"}]
-      [:div.col-xs-2#lab-info {:style "padding-top: 40px;"}]]
+      [:div.col-xs-3#lab-info {:style "padding-top: 40px;"}]]
      [:div.row
       [:div#app-info]]]))
 
@@ -91,18 +98,17 @@
   (ef/html
     [:div
      [:h2 "lab info:"]
-     (->> (:world state)
-          (seq)
-          (filter (comp not #{:cells} first))
-          (->paragraphs))]))
+     (-> (:world state)
+         (dissoc :cells)
+         (->paragraphs))]))
 
 (defn- generate-app-info-html [state]
   (ef/html
     [:div
      [:h2 "app info:"]
-     (->> (seq state)
-          (filter (comp not #{:world} first))
-          (->paragraphs))]))
+     (-> state
+         (dissoc :world)
+         (->paragraphs))]))
 
 (defn generate-field-html [] (.-outerHTML
   (ef/html 
