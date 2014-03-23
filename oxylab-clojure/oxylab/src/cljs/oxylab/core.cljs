@@ -13,7 +13,7 @@
 
 (def state (atom (init-state)))
 
-(def fps 25)
+(def fps 30)
 
 (defn- update-state [state]
   (-> state
@@ -32,7 +32,7 @@
   (v/select-cell @state id)
   (swap! state assoc-in [:selected-cell] (v/id->key id))
   (ef/at ["#cell-info"] (ef/content (v/generate-cell-info-html @state id)))
-  (ef/at ["#evolve-btn"] (events/listen :click #(evolve-click id))))
+  (set! (.-onclick (v/byid "evolve-btn")) #(evolve-click id)))
 
 (defn generate-handlers []
   (doseq [cell m/field]
@@ -47,6 +47,7 @@
 
 (def fps-out)
 (def date)
+(def fps-count 0)
 
 (defn- next-frame []
   "Main loop. Update game state, render it and re-schedule next-frame call"
@@ -54,9 +55,12 @@
   (let [old-state @state]
     (swap! state update-state)
     (v/render old-state @state))
-  (let [d (.getTime (new js/Date))]
-    (v/html! fps-out (str (/ 1000 (- d date))))
-    (set! date d)))
+  (if (= fps-count (dec fps))
+    (let [d (.getTime (new js/Date))]
+      (v/html! fps-out (subs (str (/ (* 1000 fps) (- d date))) 0 4))
+      (set! date d)
+      (set! fps-count 0))
+    (set! fps-count (inc fps-count))))
 
 (defn- start []
   (ef/at js/document

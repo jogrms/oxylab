@@ -1,13 +1,16 @@
 (defproject oxylab "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.5.1"]
-                 [enfocus "2.0.0-SNAPSHOT"]]
+                 [enfocus "2.0.2"]
+                 [cljspp "0.0.1-SNAPSHOT"]
+                 [org.clojure/clojurescript "0.0-2173"]]
 
   :main ^:skip-aot oxylab.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}}
   
-  :source-paths ["src/clj"]
-  
+  :source-paths ["src/clj"
+                 "target/generated/clj"]
+
   :plugins [
       [lein-cljsbuild "1.0.2"]
       [com.keminglabs/cljx "0.3.2"]]

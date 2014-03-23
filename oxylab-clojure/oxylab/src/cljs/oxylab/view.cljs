@@ -1,7 +1,8 @@
 (ns oxylab.view
   (:require [enfocus.core :as ef]
             [oxylab.model :as m]
-            [cljs.reader :as reader]))
+            [cljs.reader :as reader])
+  (:use [clojure.pprint :only [pprint]]))
 
 (def bg-color "#272b30")
 (def lab-fill-color "#530")
@@ -25,19 +26,6 @@
 
 (defn clear-borders [m]
   {:style (str "margin: 0px 0px 0px " m "px; border: 0px; padding: 0px;")})
-
-(defn ->paragraphs [coll]
-  (let [p (fn [c] [:p (clear-borders 0) (->paragraphs c)])
-        i (fn [[k v]]
-            (list [:p (clear-borders 0)
-                   (str k)]
-                  [:div (clear-borders 10)
-                   (->paragraphs v)]))]
-    (cond
-      (vector? coll) (map p (seq coll))
-      (map? coll) (map i (seq coll))
-      (fn? coll) "fn"
-      :else (str coll))))
 
 (defn render-cell [[x y :as coords]]
   (let [[x2d y2d] (key->coord coords)
@@ -69,49 +57,43 @@
     (ef/at [(str \# id)] (ef/set-attr :stroke color
                                       :stroke-width 0.2))))
 
-(defn generate-cell-info-html [state id]
-  (let [k (id->key id)
-        cell (get-in state [:world :cells k])]
-    (ef/html
-         (if (nil? cell)
-           [:div
-            [:h2 "cell info:"]
-            [:p "This cell does not belong to your Lab"]
-            (if (m/can-evolve? (:world state) k)
-              [:p [:a.btn#evolve-btn "Evolve"]]
-              [:p])]
-           [:div
-            [:h2 "cell info:"]
-            (->paragraphs cell)]))))
-
 (defn generate-layout-html []
   (ef/html
     [:div.container
      [:div.row
       [:div.col-xs-6#field]
-      [:div.col-xs-3#cell-info {:style "padding-top: 40px;"}]
-      [:div.col-xs-3#lab-info {:style "padding-top: 40px;"}]]
+      [:div.col-xs-3 {:style "padding-top: 40px;"}
+       [:h2 "cell info:"]
+       [:p [:a.btn#evolve-btn "Evolve"]]
+       [:pre#cell-info]]
+      [:div.col-xs-3 {:style "padding-top: 40px;"}
+       [:h2 "lab info:"]
+       [:pre#lab-info]]]
      [:div.row
-      [:div.col-xs-3#app-info]
+      [:div.col-xs-3
+       [:h2 "app info:"]
+       [:pre#app-info]]
       [:div.col-xs-3
        [:p
         [:span#fps] " FPS"]]]]))
 
+(defn generate-cell-info-html [state id]
+  (-> state
+      (get-in [:world :cells (id->key id)])
+      (pprint)
+      (str)))
+
 (defn generate-lab-info-html [state]
-  (ef/html
-    [:div
-     [:h2 "lab info:"]
-     (-> (:world state)
-         (dissoc :cells)
-         (->paragraphs))]))
+  (-> (:world state)
+      (dissoc :cells)
+      (pprint)
+      (str)))
 
 (defn- generate-app-info-html [state]
-  (ef/html
-    [:div
-     [:h2 "app info:"]
-     (-> state
-         (dissoc :world)
-         (->paragraphs))]))
+  (-> state
+      (dissoc :world)
+      (pprint)
+      (str)))
 
 (defn byid [id]
   (.getElementById js/document id))
@@ -120,7 +102,7 @@
   (set! (.-innerHTML node) s))
 
 (defn generate-field-html [] (.-outerHTML
-  (ef/html 
+  (ef/html
     [:svg {:width "525" :height "500" :viewbox "-5 0 105 100"}
      [:rect {:width 100 :height 100 :fill bg-color}]
      (render-cells)])))
@@ -138,10 +120,3 @@
   (render-field old-state state)
   (render-lab-info old-state state)
   (render-app-info old-state state))
-
-
-
-
-
-
-
