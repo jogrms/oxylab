@@ -13,7 +13,7 @@
 
 (def state (atom (init-state)))
 
-(def fps 30)
+(def fps 10)
 
 (defn- update-state [state]
   (-> state
