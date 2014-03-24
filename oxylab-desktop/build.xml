@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project name="oxylab-desktop" default="dist">
- 
-    <!-- Import libgdx build rules. -->
-    <import file="libgdx_rules.xml" />
- 
-</project>
