@@ -9,16 +9,11 @@
 (declare cell-click)
 
 (defn init-state []
-  {:world (m/populate-cell (m/init-world) [0 0] :scryopus)})
+  {:world (m/init-world)})
 
 (def state (atom (init-state)))
 
 (def fps 10)
-
-(defn- update-state [state]
-  (-> state
-      (update-in [:world] m/update-world)
-      (update-in [:tick] inc)))
 
 (defn evolve-click [id]
   (let [k (v/id->key id)]
@@ -47,7 +42,8 @@
 
 (defn- populate-click [species]
   (let [k (:selected-cell @state)]
-    (swap! state update-in [:world] m/populate-cell k species)))
+    (swap! state update-in [:world] m/populate-cell k species))
+  (v/render @state))
 
 (defn- generate-populate-handlers []
   (doseq [spec (get-in @state [:world :species])]
@@ -64,13 +60,17 @@
 (def fps-count 0)
 (def *running* false)
 
+(defn- update-state [state]
+  (-> state
+      (update-in [:world] m/update-world)
+      (update-in [:tick] inc)))
+
 (defn- next-frame []
   "Main loop. Update game state, render it and re-schedule next-frame call"
   (when *running*
     ((.-setTimeout js/window) next-frame (/ 1000 fps)))
-  (let [old-state @state]
-    (swap! state update-state)
-    (v/render old-state @state))
+  (swap! state update-state)
+  (v/render @state)
   (if (= fps-count (dec fps))
     (let [d (.getTime (new js/Date))]
       (v/html! fps-out (subs (str (/ (* 1000 fps) (- d date))) 0 4))

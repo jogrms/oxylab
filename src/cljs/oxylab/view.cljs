@@ -67,7 +67,8 @@
        [:div.btn-group
         [:a.btn.btn-default#evolve-btn "evolve"]
         [:div.btn-group
-         [:a.btn.btn-default.dropdown-toggle#populate-dd {:data-toggle "dropdown"}
+         [:a.btn.btn-default.dropdown-toggle#populate-dd
+          {:data-toggle "dropdown"}
           "populate "
           [:span.caret]]
          [:ul.dropdown-menu {:aria-labelledby "populate-dd"}
@@ -119,21 +120,21 @@
      [:rect {:width 100 :height 100 :fill bg-color}]
      (render-cells)])))
 
-(defn- render-field [old-state state]
+(defn- render-field [state]
   nil)
 
-(defn- render-lab-info [old-state state]
+(defn- render-lab-info [state]
   (ef/at ["#lab-info"] (ef/content (generate-lab-info-html state))))
 
-(defn- render-app-info [old-state state]
+(defn- render-app-info [state]
   (ef/at ["#app-info"] (ef/content (generate-app-info-html state))))
 
-(defn- render-cell-info [old-state state]
+(defn- render-cell-info [state]
   (let [id (key->id (:selected-cell state))]
     (ef/at ["#cell-info"] (ef/content (generate-cell-info-html state id)))))
 
-(defn render [old-state state]
-  (render-field old-state state)
-  (render-cell-info old-state state)
-  (render-lab-info old-state state)
-  (render-app-info old-state state))
+(defn render [ state]
+  (render-field state)
+  (render-cell-info state)
+  (render-lab-info state)
+  (render-app-info state))
