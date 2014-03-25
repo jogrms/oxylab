@@ -53,13 +53,15 @@
    :species {:scryopus (init-species)}})
 
 (defn can-populate? [world k species]
-  (not (get-in world [:cells k :populations species])))
+  (and
+    (not (get-in world [:cells k :populations species]))
+    (get-in world [:species species])))
 
 (defn populate-cell [world k species]
   (if (can-populate? world k species)
     (assoc-in world [:cells k :populations species]
               (get-in world [:species species]))
-    world))            
+    world))
 
 (defn can-evolve? [world [x y]]
   (let [t (+ x (mod y 2))

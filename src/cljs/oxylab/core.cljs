@@ -9,7 +9,7 @@
 (declare cell-click)
 
 (defn init-state []
-  {:world (m/init-world)})
+  {:world (m/populate-cell (m/init-world) [0 0] :scryopus)})
 
 (def state (atom (init-state)))
 
@@ -45,13 +45,29 @@
     (let [[x y] (first cell)]
       (v/evolve-cell state (v/key->id [x y])))))
 
+(defn- populate-click [species]
+  (let [k (:selected-cell @state)]
+    (swap! state update-in [:world] m/populate-cell k species)))
+
+(defn- generate-populate-handlers []
+  (doseq [spec (get-in @state [:world :species])]
+    (let [n (name (first spec))
+          id (str "#populate-" n)]
+      (ef/at [id] (events/listen :click #(populate-click (first spec)))))))
+
+;
+; Controls
+;
+
 (def fps-out)
 (def date)
 (def fps-count 0)
+(def *running* false)
 
 (defn- next-frame []
   "Main loop. Update game state, render it and re-schedule next-frame call"
-  ((.-setTimeout js/window) next-frame (/ 1000 fps))
+  (when *running*
+    ((.-setTimeout js/window) next-frame (/ 1000 fps)))
   (let [old-state @state]
     (swap! state update-state)
     (v/render old-state @state))
@@ -62,15 +78,30 @@
       (set! fps-count 0))
     (set! fps-count (inc fps-count))))
 
-(defn- start []
+(def start-btn)
+
+(defn start-btn-click []
+  (if *running*
+    (do
+      (set! *running* false)
+      (set! (.-innerHTML start-btn) "start"))
+    (do
+      (set! *running* true)
+      (set! (.-innerHTML start-btn) "stop")
+      (set! date (.getTime (new js/Date)))
+      (next-frame))))
+
+(defn- main []
   (ef/at js/document
-    ["body"] (ef/content (v/generate-layout-html))
+    ["body"] (ef/content (v/generate-layout-html @state))
     ["#field"] (ef/content (v/generate-field-html)))
+  (generate-populate-handlers)
   (generate-handlers)
+  (generate-populate-handlers)
   (initial-render @state)
   (set! fps-out (v/byid "fps"))
-  (set! date (.getTime (new js/Date)))
-  (next-frame))
+  (set! start-btn (v/byid "start-btn"))
+  (set! (.-onclick start-btn) start-btn-click))
 
-(set! (.-onload js/window) start)
+(set! (.-onload js/window) main)
 

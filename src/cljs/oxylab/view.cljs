@@ -57,17 +57,29 @@
     (ef/at [(str \# id)] (ef/set-attr :stroke color
                                       :stroke-width 0.2))))
 
-(defn generate-layout-html []
+(defn generate-layout-html [state]
   (ef/html
     [:div.container
      [:div.row
       [:div.col-xs-6#field]
-      [:div.col-xs-3 {:style "padding-top: 40px;"}
+      [:div.col-xs-3
        [:h2 "cell info:"]
-       [:p [:a.btn#evolve-btn "Evolve"]]
+       [:div.btn-group
+        [:a.btn.btn-default#evolve-btn "evolve"]
+        [:div.btn-group
+         [:a.btn.btn-default.dropdown-toggle#populate-dd {:data-toggle "dropdown"}
+          "populate "
+          [:span.caret]]
+         [:ul.dropdown-menu {:aria-labelledby "populate-dd"}
+          (for [spec (get-in state [:world :species])]
+            (let [n (name (first spec))
+                  id (str "populate-" n)]
+              [:li [:a {:id id} n]]))]]]
        [:pre#cell-info]]
-      [:div.col-xs-3 {:style "padding-top: 40px;"}
+      [:div.col-xs-3
        [:h2 "lab info:"]
+       [:div.btn-group
+        [:a.btn.btn-default#start-btn "start"]]
        [:pre#lab-info]]]
      [:div.row
       [:div.col-xs-3
@@ -116,7 +128,12 @@
 (defn- render-app-info [old-state state]
   (ef/at ["#app-info"] (ef/content (generate-app-info-html state))))
 
+(defn- render-cell-info [old-state state]
+  (let [id (key->id (:selected-cell state))]
+    (ef/at ["#cell-info"] (ef/content (generate-cell-info-html state id)))))
+
 (defn render [old-state state]
   (render-field old-state state)
+  (render-cell-info old-state state)
   (render-lab-info old-state state)
   (render-app-info old-state state))
