@@ -33,4 +33,4 @@
                          :optimizations :advanced
                          :pretty-print true}}]}
   
-  :hooks [cljx.hooks])
+  :hooks [])

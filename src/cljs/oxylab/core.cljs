@@ -72,6 +72,5 @@
   (set! date (.getTime (new js/Date)))
   (next-frame))
 
-(defn ^:export main []
-  (set! (.-onload js/window) start))
+(set! (.-onload js/window) start)
 
