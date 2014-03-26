@@ -14,8 +14,8 @@
     u/no-influence - the species doesn't change any resources"
 
   {:scryopus {:size 1.0
-              :production (u/exp-production 10.0 1.1)
-              :influence u/no-influence}
+              :production (u/exp-production 10.0 1.001)
+              :influence (u/add-influence :detrit -0.005)}
 
    :abracadabra {:size 2.0
                  :production (u/exp-production 10.0 1.05)

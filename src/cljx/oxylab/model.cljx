@@ -27,7 +27,7 @@
 (defn- init-cell [[x y]]
   "Returns default settings for the cell at given coordinates k"
   {:resources {:acid 1.0
-               :detrit 0.002
+               :detrit 10.0
                :soil 0.001}
    :populations {}})
 
@@ -79,9 +79,29 @@
     (assoc-in world [:cells k] (init-cell k))
     world))
 
+(defn- update-vals [m f]
+  (into {} (for [[k v] m] [k (f v)])))
+
+(defn- update-population-sizes [cell]
+  (update-in cell [:populations]
+             update-vals
+             (fn [p] (assoc p :size
+                       ((:production p) (:resources cell) (:size p))))))
+
+(defn- update-resources [cell]
+  (assoc cell :resources
+    (reduce (fn [res [_ p]] ((:influence p) res (:size p)))
+            (:resources cell)
+            (:populations cell))))
+
+(defn- update-cell [cell]
+  (-> cell
+      (update-population-sizes)
+      (update-resources)))
+
 (defn update-world [world]
   "Main game state update funciton"
-  world)
+  (update-in world [:cells] #(update-vals % update-cell)))
 
 (defn get-cell [world k]
   "Get cell at given coordinates k"
