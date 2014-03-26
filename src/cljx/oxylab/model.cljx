@@ -1,5 +1,6 @@
 (ns oxylab.model
-  (:require [oxylab.species :as s]))
+  (:require [oxylab.script :as script]
+            [oxylab.utils :as u]))
 
 ;
 ; Settings
@@ -11,7 +12,7 @@
 ; ( 0, 2) ( 1, 2)
 ;
 ;
-(def test-data
+(def flower-field
   [[0 0]
    [1 0]
    [0 1]
@@ -20,21 +21,24 @@
    [-1 -1]
    [0 -1]])
 
+(def single-field
+  [[0 0]])
+
+
+(def test-data single-field)
 ;
 ; Functions
 ;
 
 (defn- init-cell [[x y]]
   "Returns default settings for the cell at given coordinates k"
-  {:resources {:acid 1.0
-               :detrit 10.0
-               :soil 0.001}
+  {:resources (script/init-resources)
    :populations {}})
 
 (def field
   "List of playable cell coordinates"
-  (for [x (range -4 4)
-        y (range -4 5)]
+  (for [x (range 0 3)
+        y (range 0 3)]
     [x y]))
 
 (defn init-world []
@@ -43,7 +47,7 @@
                (map #(vector % (init-cell %)))
                (apply concat)
                (apply hash-map))
-   :species (s/init-species)})
+   :species (script/init-species)})
 
 (defn can-populate? [world k species]
   "Check if cell k can be populated by given species in given world"
@@ -79,12 +83,9 @@
     (assoc-in world [:cells k] (init-cell k))
     world))
 
-(defn- update-vals [m f]
-  (into {} (for [[k v] m] [k (f v)])))
-
 (defn- update-population-sizes [cell]
   (update-in cell [:populations]
-             update-vals
+             u/update-vals
              (fn [p] (assoc p :size
                        ((:production p) (:resources cell) (:size p))))))
 
@@ -101,7 +102,7 @@
 
 (defn update-world [world]
   "Main game state update funciton"
-  (update-in world [:cells] #(update-vals % update-cell)))
+  (update-in world [:cells] #(u/update-vals % update-cell)))
 
 (defn get-cell [world k]
   "Get cell at given coordinates k"

@@ -26,7 +26,7 @@
   (v/unselect-cell @state (v/key->id (:selected-cell @state)))
   (v/select-cell @state id)
   (swap! state assoc-in [:selected-cell] (v/id->key id))
-  (ef/at ["#cell-info"] (ef/content (v/generate-cell-info-html @state id)))
+  (v/render @state)
   (set! (.-onclick (v/byid "evolve-btn")) #(evolve-click id)))
 
 (defn generate-handlers []

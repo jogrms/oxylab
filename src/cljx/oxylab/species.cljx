@@ -1,22 +1,20 @@
-(ns oxylab.species
-  (:require [oxylab.species.utils :as u]))
+(ns oxylab.species)
 
-(defn init-species []
-  "Species definition.
-
-  :size - initial size of population
-
-  :production - production function ([resources size] -> new-size)
-    (u/exp-production max-size base) - exponential population growth
-      limited by max-size. (new-size = size * base)
-
-  :influence - influence function ([resources size] -> new-resources)
-    u/no-influence - the species doesn't change any resources"
-
+(def species
   {:scryopus {:size 1.0
-              :production (u/exp-production 10.0 1.001)
-              :influence (u/add-influence :detrit -0.005)}
+              :max-size 10.0
+              :production-rate 0.001
+              :tolerance {:detrit {:model :range
+                                   :ideal 5.0
+                                   :radius 5.0}
+                          :acid {:model :limit
+                                 :ideal 5.0
+                                 :radius -1.0}}
+              :influence {:detrit -0.005
+                          :soil 0.005}}
 
-   :abracadabra {:size 2.0
-                 :production (u/exp-production 10.0 1.05)
-                 :influence u/no-influence}})
+   :abracada {:size 2.0
+              :max-size 1000.0
+              :production-rate 0.05
+              :tolerance {}
+              :influence {}}})
