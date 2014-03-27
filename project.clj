@@ -30,7 +30,7 @@
   :cljsbuild {
     :builds [{:source-paths ["target/generated/cljs" "src/cljs"]
               :compiler {:output-to "war/js/main.js"
-                         :optimizations :advanced
+                         :optimizations :whitespace
                          :pretty-print true}}]}
 
   :hooks [])

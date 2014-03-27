@@ -83,11 +83,17 @@
     (assoc-in world [:cells k] (init-cell k))
     world))
 
+(defn- readd-pop [cell pops [k p]]
+  (let [new-size ((:production p) (:resources cell) (:size p))]
+    (if (< new-size 0.0001)
+      pops
+      (->> new-size
+           (assoc p :size)
+           (assoc pops k)))))
+
 (defn- update-population-sizes [cell]
-  (update-in cell [:populations]
-             u/update-vals
-             (fn [p] (assoc p :size
-                       ((:production p) (:resources cell) (:size p))))))
+  (assoc cell :populations
+    (reduce #(readd-pop cell %1 %2) {} (:populations cell))))
 
 (defn- update-resources [cell]
   (assoc cell :resources

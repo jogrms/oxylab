@@ -26,18 +26,35 @@
 ; Production
 ;
 
-(defn- get-exp-production [max-size prod-rate]
-  (fn [res size]
-    (cond
-     (>= size max-size) max-size
-     (<= size 0) 0
-     :else (let [res-factor 1.0]
-             (+ size (* size prod-rate res-factor))))))
+(defn- get-quadratic-term-fn [{:keys [model ideal radius]}]
+  (fn [v]
+    (if (and (= model :limit)
+             (>= (* (- ideal v) radius) 0))
+      0
+      (let [a (/ (- ideal v) radius)]
+        (* a a)))))
+
+(defn- get-quadratic-res-factor-fn [tols]
+  (let [term-fns (u/update-vals tols get-quadratic-term-fn)]
+    (fn [res]
+      (- 1
+         (apply + (for [[k f] term-fns] (f (get res k))))))))
+
+(defn- prod [max-size size] (max 0 (min max-size size)))
+
+(defn- get-exp-production [{:keys [production-rate max-size tolerance]}]
+  (let [res-factor-fn (get-quadratic-res-factor-fn tolerance)]
+    (fn [res size]
+      (prod max-size
+            (let [res-factor (res-factor-fn res)]
+              (+ size (* size production-rate res-factor)))))))
+
+(defn constant-production [res size] size)
 
 (defn- set-production [spec]
   (-> spec
-      (assoc :production (get-exp-production (:max-size spec)
-                                             (:production-rate spec)))
+      (assoc :production (get-exp-production spec))
+      ;(assoc :production constant-production)
       (dissoc :production-rate)
       (dissoc :max-size)
       (dissoc :tolerance)))

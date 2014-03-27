@@ -107,7 +107,7 @@
                "<div class='row'>
                  <div class='col-xs-4'>
                    <p>")
-      (.append buf k)
+      (.append buf (name k))
       (.append buf
                "   </p>
                  </div>

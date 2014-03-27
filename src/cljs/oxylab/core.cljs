@@ -9,7 +9,8 @@
 (declare cell-click)
 
 (defn init-state []
-  {:world (m/init-world)})
+  {:tick 0
+   :world (m/init-world)})
 
 (def state (atom (init-state)))
 
@@ -101,7 +102,8 @@
   (initial-render @state)
   (set! fps-out (v/byid "fps"))
   (set! start-btn (v/byid "start-btn"))
-  (set! (.-onclick start-btn) start-btn-click))
+  (set! (.-onclick start-btn) start-btn-click)
+  (cell-click (v/key->id [0 0])))
 
 (set! (.-onload js/window) main)
 
