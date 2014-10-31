@@ -1,7 +1,5 @@
 (ns oxylab.script
-  (:require [oxylab.species :as species]
-            [oxylab.resources :as resources]
-            [oxylab.utils :as u]))
+  (:require [oxylab.utils :as u]))
 
 ;
 ; Influence
@@ -56,18 +54,18 @@
       (assoc :production (get-exp-production spec))
       ;(assoc :production constant-production)
       (dissoc :production-rate)
-      (dissoc :max-size)
+      ;(dissoc :max-size)
       (dissoc :tolerance)))
 
 ;
 ; Interface
 ;
 
-(defn init-species []
-  (u/update-vals species/species
+(defn init-species [specs]
+  (u/update-vals specs
               (fn [spec] (-> spec
                              (set-production)
                              (set-influence)))))
 
-(defn init-resources []
-  resources/resources)
+(defn init-resources [res]
+  res)

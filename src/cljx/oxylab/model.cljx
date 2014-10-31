@@ -30,9 +30,9 @@
 ; Functions
 ;
 
-(defn- init-cell [[x y]]
+(defn- init-cell [[x y] res]
   "Returns default settings for the cell at given coordinates k"
-  {:resources (script/init-resources)
+  {:resources (script/init-resources res)
    :populations {}})
 
 (def field
@@ -41,13 +41,13 @@
         y (range 0 3)]
     [x y]))
 
-(defn init-world []
+(defn init-world [spec res]
   "Get a brave new world"
   {:cells (->> test-data
-               (map #(vector % (init-cell %)))
+               (map #(vector % (init-cell % res)))
                (apply concat)
                (apply hash-map))
-   :species (script/init-species)})
+   :species (script/init-species spec)})
 
 (defn can-populate? [world k species]
   "Check if cell k can be populated by given species in given world"
@@ -80,7 +80,7 @@
 (defn evolve-cell [world [x y :as k]]
   "Add new cell with key k to the lab"
   (if (can-evolve? world k)
-    (assoc-in world [:cells k] (init-cell k))
+    (assoc-in world [:cells k] (init-cell k {}))
     world))
 
 (defn- readd-pop [cell pops [k p]]
