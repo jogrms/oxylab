@@ -51,7 +51,14 @@
 
 
 (defn stop! []
+  (reset! s/state s/initial-state))
+
+(defn pause! []
   (swap! s/state assoc :running false))
+
+(defn resume! []
+  (swap! s/state assoc :running true)
+  (next-frame!))
 
 
 (defn populate! [species]

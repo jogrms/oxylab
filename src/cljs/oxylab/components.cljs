@@ -10,8 +10,17 @@
 
 (defn panel []
   [:div.btn-group
-   [:a.btn.btn-success {:on-click (if (:running @s/state) act/stop! act/start!)}
-    (if (:running @s/state) "stop" "start")]
+   [:a.btn.btn-success {:on-click act/start!
+                        :class (when (:running @s/state) "disabled")}
+    "Start"]
+   [:a.btn.btn-default {:on-click act/pause!
+                        :class (when-not (:running @s/state) "disabled")}
+    "Pause"]
+   [:a.btn.btn-default {:on-click act/resume!
+                        :class (when (:running @s/state) "disabled")}
+    "Resume"]
+   [:a.btn.btn-warning {:on-click act/stop!}
+    "Stop"]
    [:div.btn-group
     [:a#populate-dd.btn.btn-default.dropdown-toggle
      {:data-toggle "dropdown"
@@ -43,9 +52,9 @@
 
 (defn root []
   [:div.container
+   [panel]
    [:div.row
     [:div.col-xs-4
-     [panel]
      (when (seq (get-in @s/state [:world :cells [0 0] :populations]))
        [bars])]
     [:div.col-xs-4
