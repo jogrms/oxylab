@@ -22,22 +22,24 @@
      (for [[k spec] (get-in @s/state [:world :species])]
        [:li [:a {:on-click #(act/populate! k)} (name k)]])]]])
 
-(defn bar [k p]
+(defn bar [cap v max]
   [:div.row
-   [:div.col-xs-4 (name k)]
+   [:div.col-xs-4 cap]
    [:div.col-xs-8
     [:div.progress {:style {:height "15px"}}
      [:div.progress-bar.progress-bar-success
       {:style
        {:width
-        (str (* 100 (/ (:size p)
-                       (get-in @s/state [:world :species k :max-size])))
-             "%")}}]]]])
+        (str (* 100 (/ v max)) "%")}}]]]])
 
 (defn bars []
   [:div
-  (for [[k p] (get-in @s/state [:world :cells [0 0] :populations])]
-    [bar k p])])
+   [:h5 "Species bars"]
+   (for [[k p] (get-in @s/state [:world :cells [0 0] :populations])]
+     [bar (str k) (:size p) (get-in @s/state [:world :species k :max-size])])
+   [:h5 "Resource bars"]
+   (for [[k v] (get-in @s/state [:world :cells [0 0] :resources])]
+     [bar (str k) v 100])])
 
 (defn root []
   [:div.container
