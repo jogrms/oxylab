@@ -11,22 +11,21 @@
       (update-in [:world] m/update-world)
       (update-in [:tick] inc)))
 
-
 (defn- next-frame! []
 
   "Main loop. Update game state, and re-schedule next-frame call"
 
   (when (:running @s/state)
-    ((.-setTimeout js/window) next-frame! (/ 1000 fps)))
-  (swap! s/state update-state)
-  (if (= (:fps-count @s/state) (dec fps))
-    (let [d (.getTime (new js/Date))
-          fps-swapper (fn [state] (-> state
-                                      (assoc :fps (/ (* 1000 fps) (- d (:date state))))
-                                      (assoc :date d)
-                                      (assoc :fps-count 0)))]
-      (swap! s/state fps-swapper))
-    (swap! s/state update-in [:fps-count] inc)))
+    ((.-setTimeout js/window) next-frame! (/ 1000 fps))
+    (swap! s/state update-state)
+    (if (= (:fps-count @s/state) (dec fps))
+      (let [d (.getTime (new js/Date))
+            fps-swapper (fn [state] (-> state
+                                        (assoc :fps (/ (* 1000 fps) (- d (:date state))))
+                                        (assoc :date d)
+                                        (assoc :fps-count 0)))]
+        (swap! s/state fps-swapper))
+      (swap! s/state update-in [:fps-count] inc))))
 
 
 (defn start! []
