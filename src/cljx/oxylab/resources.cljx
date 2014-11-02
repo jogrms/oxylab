@@ -1,6 +1,6 @@
 (ns oxylab.resources)
 
 (def resources
-  {:detrit 10.0
-   :soil 10.0
-   :acid 0.0})
+  {:detrit 0.0
+   :soil 0.0
+   :oxygen 0.0})
