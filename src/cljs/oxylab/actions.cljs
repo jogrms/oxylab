@@ -37,13 +37,11 @@
                       (read-string))
         swapper (fn [state] (-> state
                                 (assoc :errors #{})
-                                (assoc :running true)
                                 (assoc :world (m/init-world species resources))
                                 (assoc :date (.getTime (new js/Date)))))]
     (if (and (map? species) (map? resources) (seq species) (seq resources))
       (do
-        (swap! s/state swapper)
-        (next-frame!))
+        (swap! s/state swapper))
       (let [err-set (union (when-not (and (map? species) (seq species)) #{:species})
                            (when-not (and (map? resources) (seq resources)) #{:resources}))]
         (swap! s/state assoc :errors err-set)))))
@@ -61,4 +59,10 @@
 
 
 (defn populate! [species]
-  (swap! s/state update-in [:world] m/populate-cell [0 0] species))
+  (let [running (:running @s/state)]
+    (swap! s/state (fn [state]
+                     (-> state
+                         (update-in [:world] m/populate-cell [0 0] species)
+                         (assoc :running true))))
+
+    (when-not running (next-frame!))))
