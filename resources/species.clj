@@ -3,13 +3,20 @@
                  :min-size 100
                  :production-rate 0.02
                  :influence {:detrit 1e-20
-                             :oxygen 1e-20}}
- :lichens {:size 0.3e6
+                             :oxygen 1e-20}
+                 :tolerance {:detrit {:model :limit
+                                      :ideal 40
+                                      :radius 1.5}}}
+ 
+:lichens {:size 3e5
            :max-size 1e6
            :min-size 10
-           :production-rate 2e-3
-           :influence {:detrit 0.4e-6
-                       :oxygen 0.2e-6}}
+           :production-rate 7e-3
+           :influence {:detrit 4e-6
+                       :oxygen 0.3e-6}
+         :tolerance {:detrit {:model :limit
+                                :ideal 110
+                                :radius 20}}}
  :soilbacteria {:size 0.3e30
                 :max-size 1e30
                 :min-size 100
