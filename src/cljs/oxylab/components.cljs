@@ -3,10 +3,8 @@
             [clojure.pprint :refer [pprint]]
 
             [oxylab.state :as s]
-            [oxylab.actions :as act]
-
-            [oxylab.species :as species]
-            [oxylab.resources :as resources]))
+            [oxylab.actions :as act])
+  (:require-macros [oxylab.util.macros :refer [paste-resource]]))
 
 (defn panel []
   [:div.row
@@ -72,7 +70,7 @@
                                 :style {:width "100%"
                                         :height "100%"
                                         :font-family "Courier New"}
-                                :default-value (pprint species/species)}]]
+                                :default-value (paste-resource "resources/species.clj")}]]
     [:div.col-xs-6
      (when (contains? (:errors @s/state) :resources)
        [:div.alert.alert-danger "Syntax error in resources definition"])
@@ -80,7 +78,7 @@
                                   :style {:width "100%"
                                           :height "100%"
                                           :font-family "Courier New"}
-                                  :default-value (pprint resources/resources)}]]]]])
+                                  :default-value (paste-resource "resources/resources.clj")}]]]]])
 
 (defn start! []
   (reagent/render-component
