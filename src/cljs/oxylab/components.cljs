@@ -9,27 +9,23 @@
             [oxylab.resources :as resources]))
 
 (defn panel []
-  [:div.btn-group
-   [:a.btn.btn-success {:on-click act/start!
-                        :class (when (:running @s/state) "disabled")}
-    "Start"]
-   [:a.btn.btn-default {:on-click act/pause!
-                        :class (when-not (:running @s/state) "disabled")}
-    "Pause"]
-   [:a.btn.btn-default {:on-click act/resume!
-                        :class (when (:running @s/state) "disabled")}
-    "Resume"]
-   [:a.btn.btn-warning {:on-click act/stop!}
-    "Stop"]
-   [:div.btn-group
-    [:a#populate-dd.btn.btn-default.dropdown-toggle
-     {:data-toggle "dropdown"
-      :class (when-not (:running @s/state) "disabled")}
-     "populate cell "
-     [:span.caret]]
-    [:ul.dropdown-menu {:aria-labelledby "populate-dd"}
-     (for [[k spec] (get-in @s/state [:world :species])]
-       [:li [:a {:on-click #(act/populate! k)} (name k)]])]]])
+  [:div.row
+   [:div.btn-group.col-xs-4
+    [:a.btn.btn-success {:on-click act/start!
+                         :class (when (:running @s/state) "disabled")}
+     "Start"]
+    [:a.btn.btn-default {:on-click act/pause!
+                         :class (when-not (:running @s/state) "disabled")}
+     "Pause"]
+    [:a.btn.btn-default {:on-click act/resume!
+                         :class (when (:running @s/state) "disabled")}
+     "Resume"]
+    [:a.btn.btn-warning {:on-click act/stop!}
+     "Stop"]]
+   (when (seq (get-in @s/state [:world :species]))
+     [:div.btn-group.col-xs-8
+      (for [[k spec] (get-in @s/state [:world :species])]
+        [:a.btn.btn-primary {:on-click #(act/populate! k)} (name k)])])])
 
 (defn bar [cap v max]
   [:div.row
