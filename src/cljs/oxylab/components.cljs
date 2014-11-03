@@ -44,19 +44,20 @@
 (defn bars []
   [:div
    [:h5 "Species bars"]
-   (for [[k p] (get-in @s/state [:world :cells [0 0] :populations])]
-     [bar (str k) (:size p) (get-in @s/state [:world :species k :max-size])])
+   (when (seq (get-in @s/state [:world :cells [0 0] :populations]))
+     (for [[k p] (get-in @s/state [:world :cells [0 0] :populations])]
+       [bar (str k) (:size p) (get-in @s/state [:world :species k :max-size])]))
    [:h5 "Resource bars"]
-   (for [[k v] (get-in @s/state [:world :cells [0 0] :resources])]
-     [bar (str k) v 100])])
+   (when (seq (get-in @s/state [:world :cells [0 0] :resources]))
+     (for [[k v] (get-in @s/state [:world :cells [0 0] :resources])]
+       [bar (str k) (:size v) (:max-size v)]))])
 
 (defn root []
   [:div.container
    [panel]
    [:div.row
     [:div.col-xs-4
-     (when (seq (get-in @s/state [:world :cells [0 0] :populations]))
-       [bars])]
+     [bars]]
     [:div.col-xs-4
      [:h3 "lab info:"]
      [:pre.well.well-sm {:style {:color "#fff"}}

@@ -10,8 +10,8 @@
 (defn- add-res-influence [infl [res factor]]
   (fn [resources size]
     (let [r (infl resources size)]
-      (if-let [val (get r res)]
-        (assoc r res (max 0 (+ val (* size factor))))
+      (if-let [val (get-in r [res :size])]
+        (assoc-in r [res :size] (max 0 (+ val (* size factor))))
         r))))
 
 (defn- get-delta-influence [inf]
@@ -36,18 +36,19 @@
   (let [term-fns (u/update-vals tols get-quadratic-term-fn)]
     (fn [res]
       (- 1
-         (apply + (for [[k f] term-fns] (f (get res k))))))))
+         (apply + (for [[k f] term-fns] (f (get-in res [k :size]))))))))
 
 (defn- prod [max-size size] (max 0 (min max-size size)))
 
-(defn- get-exp-production [{:keys [production-rate max-size tolerance]}]
+(defn- get-exp-production
+  [{:keys [production-rate max-size tolerance]}]
+  "Generates exponential production function based on quadratic tolerance."
+
   (let [res-factor-fn (get-quadratic-res-factor-fn tolerance)]
     (fn [res size]
       (prod max-size
             (let [res-factor (res-factor-fn res)]
               (+ size (* size production-rate res-factor)))))))
-
-(defn constant-production [res size] size)
 
 (defn- set-production [spec]
   (-> spec

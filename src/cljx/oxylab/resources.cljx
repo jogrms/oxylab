@@ -1,6 +1,9 @@
 (ns oxylab.resources)
 
 (def resources
-  {:detrit 0.0
-   :soil 0.0
-   :oxygen 0.0})
+  {:detrit {:size 0.0
+            :max-size 100}
+   :soil {:size 5.0
+          :max-size 100}
+   :oxygen {:size 0.0
+            :max-size 100}})
