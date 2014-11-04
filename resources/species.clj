@@ -6,25 +6,23 @@
                  :tolerance {:detrit {:model :limit
                                       :ideal 25
                                       :radius 1.5}}}
-:lichens {:size 3e4
+ :lichens {:size 3e4
            :max-size 1e5
            :min-size 10
            :production-rate 7e-3
            :influence {:detrit 1e-5}
-         :tolerance {:detrit {:model :limit
+           :tolerance {:detrit {:model :limit
                                 :ideal 75
                                 :radius 40}}}
-
  :soilbacteria {:size 0.3e30
                 :max-size 1e30
                 :min-size 100
                 :production-rate 0.01
                 :tolerance {:detrit {:model :limit
-                                     :ideal 1.2e-30
-                                     :radius -1.2e-30}}
+                                     :ideal 30
+                                     :radius -10}}
                 :influence {:detrit -0.5e-30
                             :soil 0.04e-30}}
-
  :fungus {:size 0.3e9
           :max-size 1e10
           :min-size 100
