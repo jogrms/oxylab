@@ -1,11 +1,11 @@
-{:cyanobacteria {:size 0.3e20
+{:cyanobacteria {:size 0.2e20
                  :max-size 1e20
                  :min-size 100
-                 :production-rate 0.03
+                 :production-rate 0.04
                  :influence {:detrit 1e-20}
                  :tolerance {:detrit {:model :limit
                                       :ideal 25
-                                      :radius 1.5}}}
+                                      :radius 5}}}
  :lichens {:size 3e4
            :max-size 1e5
            :min-size 10
@@ -14,15 +14,15 @@
            :tolerance {:detrit {:model :limit
                                 :ideal 75
                                 :radius 40}}}
- :soilbacteria {:size 0.3e30
-                :max-size 1e30
+ :soilbacteria {:size 0.2e20
+                :max-size 1e20
                 :min-size 100
-                :production-rate 0.01
+                :production-rate 0.05
                 :tolerance {:detrit {:model :limit
-                                     :ideal 30
-                                     :radius -10}}
-                :influence {:detrit -0.5e-30
-                            :soil 0.04e-30}}
+                                     :ideal 25
+                                     :radius -5}}
+                :influence {:detrit -1.4e-20
+                            :soil 0.1e-20}}
  :fungus {:size 0.3e9
           :max-size 1e10
           :min-size 100
