@@ -4,65 +4,50 @@
             [cljs.reader :refer [read-string]]
             [clojure.set :refer [union]]))
 
-(def fps 10)
+(defn plot [world tick max-tick populate-script]
+  (loop [acc [{:world world
+               :tick tick}]]
+    (if (< (:tick (last acc)) max-tick)
+      (let [w (:world (last acc))
+            populated-world (if-let [spec (get populate-script (:tick (last acc)))]
+                              (m/populate-cell w spec)
+                              w)
+            updated-world (m/update-world populated-world)]
+        (recur (conj acc {:world updated-world
+                          :tick (inc (:tick (last acc)))})))
+      acc)))
 
-(defn- update-state [state]
-  (-> state
-      (update-in [:world] m/update-world)
-      (update-in [:tick] inc)))
-
-(defn- next-frame! []
-
-  "Main loop. Update game state, and re-schedule next-frame call"
-
-  (when (:running @s/state)
-    ((.-setTimeout js/window) next-frame! (/ 1000 fps))
-    (swap! s/state update-state)
-    (if (= (:fps-count @s/state) (dec fps))
-      (let [d (.getTime (new js/Date))
-            fps-swapper (fn [state] (-> state
-                                        (assoc :fps (/ (* 1000 fps) (- d (:date state))))
-                                        (assoc :date d)
-                                        (assoc :fps-count 0)))]
-        (swap! s/state fps-swapper))
-      (swap! s/state update-in [:fps-count] inc))))
-
-
-(defn start! []
+(defn apply! []
   (let [species (-> (js/document.getElementById "species-editor")
                     (.-value)
                     (read-string))
         resources (-> (js/document.getElementById "resources-editor")
                       (.-value)
                       (read-string))
-        swapper (fn [state] (-> state
-                                (assoc :errors #{})
-                                (assoc :world (m/init-world species resources))
-                                (assoc :date (.getTime (new js/Date)))))]
+        secs (-> (js/document.getElementById "tick-count-editor")
+                       (.-value)
+                       (read-string))
+        colors (-> (js/document.getElementById "colors-editor")
+                       (.-value)
+                       (read-string))
+        tick-count (* 10 secs)
+        populate-script (-> (js/document.getElementById "populate-script-editor")
+                            (.-value)
+                            (read-string))
+        swapper (fn [state]
+                  (let [world (m/init-world species resources)]
+                    (-> state
+                        (assoc :tick-count tick-count)
+                        (assoc :errors #{})
+                        (assoc :world world)
+                        (assoc :colors colors)
+                        (assoc :plot (plot world 0 tick-count populate-script)))))]
     (if (and (map? species) (map? resources) (seq species) (seq resources))
       (do
-        (swap! s/state swapper))
+        (reset! s/working true)
+        (swap! s/state swapper)
+        (reset! s/working false))
       (let [err-set (union (when-not (and (map? species) (seq species)) #{:species})
                            (when-not (and (map? resources) (seq resources)) #{:resources}))]
         (swap! s/state assoc :errors err-set)))))
 
-
-(defn stop! []
-  (reset! s/state s/initial-state))
-
-(defn pause! []
-  (swap! s/state assoc :running false))
-
-(defn resume! []
-  (swap! s/state assoc :running true)
-  (next-frame!))
-
-
-(defn populate! [species]
-  (let [running (:running @s/state)]
-    (swap! s/state (fn [state]
-                     (-> state
-                         (update-in [:world] m/populate-cell [0 0] species)
-                         (assoc :running true))))
-
-    (when-not running (next-frame!))))

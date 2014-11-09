@@ -7,7 +7,7 @@
                  [environ "1.0.0"]
 
                  [org.clojure/clojurescript "0.0-2371"]
-                 [reagent "0.4.2"]]
+                 [reagent "0.4.3"]]
 
   :min-lein-version "2.1.2"
   :main oxylab.web
@@ -19,7 +19,7 @@
 
   :plugins [
       [lein-cljsbuild "1.0.3"]
-      [com.keminglabs/cljx "0.4.0"]]
+      [com.keminglabs/cljx "0.4.0" :exclusions [org.clojure/clojure]]]
 
   :hooks [cljx.hooks
           leiningen.cljsbuild]
