@@ -1,1 +1,2 @@
-{0 :lichens}
+{0 :cyanobacteria
+ 40 :soilbacteria}
