@@ -7,7 +7,7 @@
                                       :ideal 35
                                       :radius 15}
                              :soil {:model :limit
-                                    :ideal 19.9
+                                    :ideal 19.5
                                     :radius 0.1}}}
 :soilbacteria {:size 3e19
                 :max-size 1e20
