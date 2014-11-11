@@ -21,7 +21,6 @@
                                    :radius 1}}
                 :influence {:detrit -0.35e-20
                             :soil 0.045e-20}}
-
  :lichens {:size 1e4
                  :max-size 1e5
                  :min-size 100
@@ -49,16 +48,33 @@
 
 
 
-:moss {:size 0.3e6
-        :max-size 1e6
-        :min-size 10
-        :production-rate 1e-5
-        :tolerance {:soil {:model :limit
-                           :ideal 1
-                           :radius -0.5}}
-        :influence {:detrit 3e-6
-                    :oxygen 3e-6
-                    :soil -1e-6}}
+ :moss {:size 1e4
+        :max-size 2e5
+        :min-size 100
+        :production-rate 1e-2
+        :influence {:detrit 2.5e-6}
+        :tolerance {:detrit {:model :limit
+                             :ideal 90
+                             :radius 20}
+                    :soil {:model :limit
+                           :ideal 98.9
+                           :radius 0.1}}}
+ :worms {:size 6e4
+         :max-size 2e5
+         :min-size 100
+         :production-rate 1.3e-2
+         :tolerance {:detrit {:model :limit
+                              :ideal 60
+                              :radius -15}
+                     :soil {:model :limit
+                            :ideal 99
+                            :radius 1}}
+         :influence {:detrit -2.7e-6
+                     :soil 2.6e-7}}
+
+
+
+
  :herbs {:size 300
          :max-size 1e4
          :min-size 5
@@ -69,15 +85,6 @@
          :influence {:detrit 5e-4
                      :oxygen 4e-4
                      :soil -1.2e-4}}
- :worms {:size 500
-         :max-size 1e3
-         :min-size 3
-         :production-rate 1e-3
-         :tolerance {:detrit {:model :limit
-                              :ideal 8
-                              :radius -5}}
-         :influence {:detrit -9e-3
-                     :soil 6e-3}}
  :insects {:size 1e4
            :max-size 1e4
            :min-size 2
