@@ -1,2 +1,2 @@
-{0 :cyanobacteria
- 40 :soilbacteria}
+{0 :cyanobacteria 
+250 :soilbacteria}
