@@ -9,7 +9,7 @@
                              :soil {:model :limit
                                     :ideal 19.5
                                     :radius 0.1}}}
-:soilbacteria {:size 3e19
+ :soilbacteria {:size 3e19
                 :max-size 1e20
                 :min-size 1e18
                 :production-rate 0.01
@@ -20,11 +20,7 @@
                                    :ideal 22
                                    :radius 1}}
                 :influence {:detrit -0.35e-20
-                            :soil 0.03e-20}}
-
-
-
-
+                            :soil 0.045e-20}}
  :lichens {:size 1e4
            :max-size 1e5
            :min-size 10
