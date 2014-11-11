@@ -1,49 +1,50 @@
-{:cyanobacteria {:size 0.2e20
+{:cyanobacteria {:size 1e19
                  :max-size 1e20
-                 :min-size 100
-                 :production-rate 0.04
-                 :influence {:detrit 1e-20}
+                 :min-size 1e18
+                 :production-rate 0.015
+                 :influence {:detrit 0.3e-20}
                  :tolerance {:detrit {:model :limit
-                                      :ideal 25
-                                      :radius 5}
+                                      :ideal 35
+                                      :radius 15}
                              :soil {:model :limit
-                                    :ideal 18.4
-                                    :radius 0.7}}}
-:soilbacteria {:size 0.2e20
+                                    :ideal 19.9
+                                    :radius 0.1}}}
+:soilbacteria {:size 3e19
                 :max-size 1e20
-                :min-size 1000
-                :production-rate 0.05
+                :min-size 1e18
+                :production-rate 0.01
                 :tolerance {:detrit {:model :limit
-                                     :ideal 25
-                                     :radius -5}
+                                     :ideal 35
+                                     :radius -10}                       
                             :soil {:model :limit
-                                   :ideal 18.1
+                                   :ideal 22
                                    :radius 1}}
-                :influence {:detrit -1.4e-20
-                            :soil 0.1e-20}}
- :lichens {:size 1e3
-           :max-size 1e4
+                :influence {:detrit -0.35e-20
+                            :soil 0.03e-20}}
+
+
+
+
+ :lichens {:size 1e4
+           :max-size 1e5
            :min-size 10
            :production-rate 1e-2
-           :influence {:detrit 3e-5}
+           :influence {:detrit 5e-6}
            :tolerance {:detrit {:model :limit
-                                :ideal 30
-                                :radius 5}}
-                       :soil {:model :limit
-                              :ideal 18.1
-                              :radius 1}}}
- :fungus {:size 1e3
-          :max-size 1e4
+                                :ideal 75
+                                :radius 40}}}
+ 
+
+
+ :fungus {:size 1e4
+          :max-size 1e5
           :min-size 10
-          :production-rate 1.1e-2
+          :production-rate 1e-2
           :tolerance {:detrit {:model :limit
-                               :ideal 30
-                               :radius -5}
-                      :soil {:model :limit
-                             :ideal 18.1
-                             :radius 1}}}
-          :influence {:detrit -3e-5
-                      :soil 0.3e-5}}
+                               :ideal 1.4e-10
+                               :radius -1.4e-10}}
+          :influence {:detrit -1e-10
+                      :soil 1.3e-10}}
  :moss {:size 0.3e6
         :max-size 1e6
         :min-size 10
