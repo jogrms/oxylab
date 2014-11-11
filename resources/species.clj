@@ -9,7 +9,7 @@
                              :soil {:model :limit
                                     :ideal 19.5
                                     :radius 0.1}}}
- :soilbacteria {:size 3e19
+:soilbacteria {:size 3e19
                 :max-size 1e20
                 :min-size 1e18
                 :production-rate 0.01
@@ -21,7 +21,8 @@
                                    :radius 1}}
                 :influence {:detrit -0.35e-20
                             :soil 0.045e-20}}
-  :lichens {:size 1e4
+
+ :lichens {:size 1e4
                  :max-size 1e5
                  :min-size 100
                  :production-rate 8e-3
@@ -44,7 +45,11 @@
                                    :radius 10}}
                 :influence {:detrit -3.2e-6
                             :soil 0.7e-6}}
- :moss {:size 0.3e6
+ 
+
+
+
+:moss {:size 0.3e6
         :max-size 1e6
         :min-size 10
         :production-rate 1e-5
