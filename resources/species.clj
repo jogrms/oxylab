@@ -127,4 +127,4 @@
                                    :radius -1}}
                 :influence {:detrit 0.4
                             :oxygen 2
-                            :soil -0.5}}}
+                            :soil -0.5}}}  
