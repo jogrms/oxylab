@@ -57,18 +57,18 @@
                              :ideal 90
                              :radius 20}
                     :soil {:model :limit
-                           :ideal 98.9
-                           :radius 0.1}}}
+                           :ideal 99
+                           :radius 1}}}
  :worms {:size 6e4
          :max-size 2e5
-         :min-size 100
+         :min-size 10
          :production-rate 1.3e-2
          :tolerance {:detrit {:model :limit
                               :ideal 60
-                              :radius -15}
+                              :radius -17}
                      :soil {:model :limit
-                            :ideal 99
-                            :radius 1}}
+                            :ideal 110
+                            :radius 15}}
          :influence {:detrit -2.7e-6
                      :soil 2.6e-7}}
 
@@ -94,16 +94,30 @@
                                 :radius -6}}
            :influence {:detrit -13e-4
                        :soil 10e-4}}
- :bushes {:size 2
-          :max-size 100
+ 
+
+
+
+
+:bushes {:size 4
+          :max-size 1000
           :min-size 2
-          :production-rate 2e-3
+          :production-rate 1.1e-2
           :tolerance {:soil {:model :limit
-                             :ideal 6
-                             :radius -1}}
-          :influence {:detrit 6e-2
-                      :oxygen 0.2
-                      :soil -0.06}}
+                             :ideal 80
+                             :radius -10}}
+          :influence {:detrit 5e-2
+                      :oxygen 0
+                      :soil -7e-5}}
+
+
+
+
+
+
+
+
+
  :foliar_trees {:size 1
                 :max-size 20
                 :min-size 1
