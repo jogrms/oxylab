@@ -113,11 +113,6 @@
 
 
 
-
-
-
-
-
  :foliar_trees {:size 1
                 :max-size 20
                 :min-size 1
@@ -127,4 +122,12 @@
                                    :radius -1}}
                 :influence {:detrit 0.4
                             :oxygen 2
-                            :soil -0.5}}}  
+                            :soil -0.5}}
+ :human {:size 1
+          :max-size 1
+          :min-size 0.5
+          :production-rate 0
+          :tolerance {:oxygen {:model :limit
+                                      :ideal 600
+                                      :radius 1000}}
+          :influence {:oxygen -0.1}}} 
